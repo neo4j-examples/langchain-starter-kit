@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "langchain-starter-kit"
+version = "0.1.0"
+description = ""
+authors = ["jalakoo <jalakoo@gmail.com>"]
+readme = "README.md"
+packages = [{include = "langchain_starter_kit"}]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.110.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
