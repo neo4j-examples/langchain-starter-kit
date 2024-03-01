@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import Union
 from fastapi import FastAPI
 from .models import ApiChatPostRequest, ApiChatPostResponse
+from .components.rag_agent import get_results
 
 app = FastAPI(
     title='Chat API',
@@ -22,6 +23,7 @@ def send_chat_message(body: ApiChatPostRequest) -> Union[None, ApiChatPostRespon
     """
 
     # Echo placeholder
+    response = get_results(body.message)
 
     # TODO: Replace to call with underlying LLM using target framework
-    return ApiChatPostResponse(message=body.message)
+    return ApiChatPostResponse(message=response)
