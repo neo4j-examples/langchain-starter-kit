@@ -11,6 +11,9 @@ NEO4J_PASSWORD=<password> \
 OPENAI_API_KEY=<open_ai_key> \
 poetry run uvicorn langchain_starter_kit.main:app --reload
 
+or 
+
+poetry run start
 ```
 
 Default local address will be: http://127.0.0.1:8000
