@@ -50,6 +50,7 @@ try:
         url=NEO4J_URI,
         username=NEO4J_USERNAME,
         password=NEO4J_PASSWORD,
+        database=NEO4J_DATABASE,
         index_name=index_name,
         embedding_node_property=node_property_name,
     )
@@ -62,6 +63,7 @@ except:
             url=NEO4J_URI,
             username=NEO4J_USERNAME,
             password=NEO4J_PASSWORD,
+            database=NEO4J_DATABASE,
             index_name=index_name,
             node_label="Chunk",
             text_node_properties=["text"],
