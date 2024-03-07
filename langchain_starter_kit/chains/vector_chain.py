@@ -3,10 +3,8 @@ from langchain.prompts.prompt import PromptTemplate
 from langchain.vectorstores.neo4j_vector import Neo4jVector
 from langchain.chains import RetrievalQAWithSourcesChain
 from langchain.chains.conversation.memory import ConversationBufferMemory
-# from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-from .llm_manager import EMBEDDINGS, LLM
-from .secrets_manager import NEO4J_DATABASE, NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD
-from retry import retry
+from langchain_starter_kit.llms import EMBEDDINGS, LLM
+from langchain_starter_kit.secrets import NEO4J_DATABASE, NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD
 import logging
 
 
@@ -88,7 +86,6 @@ vector_chain = RetrievalQAWithSourcesChain.from_chain_type(
     max_tokens_limit=2000
 )
 
-@retry(tries=2, delay=5)
 def get_results(question)-> str:
     """Generate response using Neo4jVector using vector index only
 
@@ -122,7 +119,6 @@ def get_results(question)-> str:
     return result
 
 # Using the vector store's similarity search directly.
-@retry(tries=3, delay=5)
 def get_direct_results(question)-> str:
     """Generate response using Neo4jVector using vector index only
 

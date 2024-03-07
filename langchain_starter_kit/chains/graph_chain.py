@@ -2,10 +2,9 @@ from langchain.chains import GraphCypherQAChain
 from langchain.chains.conversation.memory import ConversationBufferMemory
 from langchain_community.graphs import Neo4jGraph
 from langchain.prompts.prompt import PromptTemplate
-from .llm_manager import LLM
-from .secrets_manager import NEO4J_DATABASE, NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD
-from retry import retry
+from langchain_starter_kit.llms import LLM
 import logging
+import os
 
 CYPHER_GENERATION_TEMPLATE = """Task:Generate Cypher statement to query a graph database.
 Instructions:
@@ -49,6 +48,11 @@ MEMORY = ConversationBufferMemory(
     output_key='answer', 
     return_messages=True)
 
+NEO4J_URI = os.getenv("NEO4J_URI")
+NEO4J_DATABASE = os.getenv("NEO4J_DATABASE")
+NEO4J_USERNAME = os.getenv("NEO4J_USERNAME")
+NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD")
+
 graph = Neo4jGraph(
     url=NEO4J_URI,
     username=NEO4J_USERNAME,
@@ -64,11 +68,10 @@ graph_chain = GraphCypherQAChain.from_llm(
     validate_cypher= True,
     graph=graph,
     verbose=True, 
-    # return_intermediate_steps = True,
+    return_intermediate_steps = True,
     return_direct = True
 )
 
-@retry(tries=2, delay=12)
 def get_results(question) -> str:
     """Generate a response from a GraphCypherQAChain targeted at generating answered related to relationships. 
 
@@ -89,7 +92,7 @@ def get_results(question) -> str:
         chain_result = graph_chain.invoke({
             "query": question},
             prompt=CYPHER_GENERATION_PROMPT,
-            return_only_outputs = True,
+            # return_only_outputs = True,
         )
     except Exception as e:
         # Occurs when the chain can not generate a cypher statement

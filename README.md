@@ -1,24 +1,17 @@
 # Neo4j LangChain Starter Kit
 
+
+## Requirements
+- [Poetry]() for running locally
+
 ## Usage
 ```
 poetry install
 
-NEO4J_URI=<uri> \
+NEO4J_URI=<database_uri> \
 NEO4J_DATABASE=<database_name> \
 NEO4J_USERNAME=<username> \
 NEO4J_PASSWORD=<password> \
-OPENAI_API_KEY=<open_ai_key> \
-poetry run uvicorn langchain_starter_kit.main:app --reload
-
-or 
-
-poetry run start
+OPENAI_API_KEY=<api_key> \
+poetry run uvicorn langchain_starter_kit.main:app --reload --port=8003 --log-config=log_conf.yaml
 ```
-
-Default local address will be: http://127.0.0.1:8000
-
-To change port, append above with `--port=<port>`
-
-## Docs
-FastAPI will automatically generate a swagger doc interface at a `/docs#` path from above
