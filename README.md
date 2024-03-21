@@ -17,7 +17,7 @@ This kit provides a simple [FastAPI](https://fastapi.tiangolo.com/) backend serv
 
 The `env.sample` file contains read-only access credentials to a publicly hosted Neo4j instance with public EDGAR SEC data. 
 
-If you would like to load your own instance with a subset of this information. Copy and paste the `edgar_import.cypher` into the [Neo4j browser](https://neo4j.com/docs/browser-manual/current/) that's connected to your instance.
+If you would like to load your own instance with a subset of this information. Copy, paste, and run the [edgar_import.cypher](edgar_import.cypher) in a [Neo4j browser](https://neo4j.com/docs/browser-manual/current/) connected to your instance.
 
 ## Usage
 ```
