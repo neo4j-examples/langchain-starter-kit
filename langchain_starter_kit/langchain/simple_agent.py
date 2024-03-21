@@ -1,9 +1,9 @@
 from langchain.chains import LLMChain
 from langchain.chains.conversation.memory import ConversationBufferMemory
 from langchain.prompts import PromptTemplate
-from langchain_starter_kit.chains.graph_chain import get_results as get_graph_results
-from langchain_starter_kit.chains.vector_chain import get_results as get_vector_results
-from langchain_starter_kit.llms import LLM
+from langchain_starter_kit.langchain.llms import LLM
+from langchain_starter_kit.langchain.graph_chain import get_results as get_graph_results
+from langchain_starter_kit.langchain.vector_chain import get_results as get_vector_results
 
 MEMORY = ConversationBufferMemory(memory_key="chat_history", input_key='question', output_key='text', return_messages=True)
 

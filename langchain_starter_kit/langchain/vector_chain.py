@@ -1,12 +1,15 @@
-from json import loads, dumps
 from langchain.prompts.prompt import PromptTemplate
 from langchain.vectorstores.neo4j_vector import Neo4jVector
 from langchain.chains import RetrievalQAWithSourcesChain
 from langchain.chains.conversation.memory import ConversationBufferMemory
-from langchain_starter_kit.llms import EMBEDDINGS, LLM
-from langchain_starter_kit.secrets import NEO4J_DATABASE, NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD
+from langchain_starter_kit.langchain.llms import EMBEDDINGS, LLM
 import logging
+import os
 
+NEO4J_URI = os.getenv("NEO4J_URI")
+NEO4J_DATABASE = os.getenv("NEO4J_DATABASE")
+NEO4J_USERNAME = os.getenv("NEO4J_USERNAME")
+NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD")
 
 VECTOR_PROMPT_TEMPLATE = """Human: You are a data analyst who can answer questions only based on the context below.
 * Answer the question STRICTLY based on the context provided in JSON below.

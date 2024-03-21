@@ -2,9 +2,14 @@ from langchain.chains import GraphCypherQAChain
 from langchain.chains.conversation.memory import ConversationBufferMemory
 from langchain_community.graphs import Neo4jGraph
 from langchain.prompts.prompt import PromptTemplate
-from langchain_starter_kit.llms import LLM
+from langchain_starter_kit.langchain.llms import LLM
 import logging
 import os
+
+NEO4J_URI = os.getenv("NEO4J_URI")
+NEO4J_DATABASE = os.getenv("NEO4J_DATABASE")
+NEO4J_USERNAME = os.getenv("NEO4J_USERNAME")
+NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD")
 
 CYPHER_GENERATION_TEMPLATE = """Task:Generate Cypher statement to query a graph database.
 Instructions:
@@ -47,11 +52,6 @@ MEMORY = ConversationBufferMemory(
     input_key='question', 
     output_key='answer', 
     return_messages=True)
-
-NEO4J_URI = os.getenv("NEO4J_URI")
-NEO4J_DATABASE = os.getenv("NEO4J_DATABASE")
-NEO4J_USERNAME = os.getenv("NEO4J_USERNAME")
-NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD")
 
 graph = Neo4jGraph(
     url=NEO4J_URI,

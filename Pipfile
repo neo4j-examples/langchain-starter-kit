@@ -1,0 +1,17 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+neo4j = "~=5.18"
+langchain = "~=0.1.13"
+langchainhub = "==0.1.15"
+langchain-community = "~=0.0.29"
+langchain-openai = "~=0.0.8"
+fastapi = "~=0.110.0"
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"
