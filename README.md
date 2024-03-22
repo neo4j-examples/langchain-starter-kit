@@ -42,4 +42,4 @@ curl --location 'http://127.0.0.1:8000/api/chat' \
 
 
 ## Learn More
-If you'd like to learn more about using Neo4j with LLMs, we recommend checking out our [GraphAcademy Courses](https://graphacademy.neo4j.com).
+At [Neo4j GraphAcademy](https://graphacademy.neo4j.com), we offer a wide range of courses completely free of charge, including [Neo4j & LLM Fundamentals](https://graphacademy.neo4j.com/courses/llm-fundamentals/) and [Build a Neo4j-backed Chatbot using Python](https://graphacademy.neo4j.com/courses/llm-chatbot-python/).
