@@ -11,13 +11,18 @@ This kit provides a simple [FastAPI](https://fastapi.tiangolo.com/) backend serv
 - A running [local](https://neo4j.com/download/) or [cloud](https://neo4j.com/cloud/platform/aura-graph-database/) Neo4j database
 
 
-## Configure
+## Configuration
 1. Copy the `env.sample` file as `.env` 
 2. Update the new `.env` file with your Neo4j and OpenAI credentials
 
-The `env.sample` file contains read-only access credentials to a publicly hosted Neo4j instance with public EDGAR SEC data. 
+The `env.sample` file contains read-only access credentials to a publicly hosted Neo4j instance with public EDGAR SEC data.
 
-If you would like to load your own instance with a subset of this information. Copy, paste, and run the [edgar_import.cypher](edgar_import.cypher) in a [Neo4j browser](https://neo4j.com/docs/browser-manual/current/) connected to your instance.
+The `NEO4J_URI` value can use either the neo4j or [bolt](https://neo4j.com/docs/bolt/current/bolt/) uri scheme. For more details on which to use, see this [example](https://neo4j.com/docs/driver-manual/4.0/client-applications/#driver-configuration-examples)
+
+### Database Setup
+If you would like to load your own instance with a subset of this information. Add your own OpenAI key to the Cypher code in the [edgar_import.cypher](edgar_import.cypher) file and run it in your instance's [Neo4j browser](https://neo4j.com/docs/browser-manual/current/).
+
+For more information on how this load script works, see [this notebook](https://github.com/neo4j-examples/sec-edgar-notebooks/blob/main/notebooks/kg-construction/1-mvg.ipynb).
 
 ## Usage
 ```
