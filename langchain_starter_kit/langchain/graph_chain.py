@@ -69,7 +69,8 @@ graph_chain = GraphCypherQAChain.from_llm(
     graph=graph,
     verbose=True, 
     return_intermediate_steps = True,
-    return_direct = True
+    return_direct = True,
+    memory = MEMORY
 )
 
 def get_results(question) -> str:
