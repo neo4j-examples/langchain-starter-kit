@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "langchain-starter-kit"
+version = "0.1.0"
+description = ""
+authors = ["jalakoo <jalakoo@gmail.com>"]
+license = "Apache 2.0"
+readme = "README.md"
+packages = [
+    { include = "app" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.110.1"
+uvicorn = "^0.29.0"
+langchain-openai = "^0.1.1"
+langchain = "^0.1.14"
+langchain-community = "^0.0.31"
+neo4j = "^5.19.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
