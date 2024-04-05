@@ -1,0 +1,64 @@
+version: 1
+disable_existing_loggers: False
+formatters:
+  default:
+    # "()": uvicorn.logging.DefaultFormatter
+    format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+  access:
+    # "()": uvicorn.logging.AccessFormatter
+    format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+handlers:
+  default:
+    formatter: default
+    class: logging.StreamHandler
+    stream: ext://sys.stderr
+  access:
+    formatter: access
+    class: logging.StreamHandler
+    stream: ext://sys.stdout
+loggers:
+  uvicorn.error:
+    level: WARNING
+    handlers:
+      - default
+    propagate: no
+  uvicorn.access:
+    level: WARNING
+    handlers:
+      - access
+    propagate: no
+  gql.transport.aiohttp:
+    level: WARNING
+    handlers:
+      - default
+    propagate: no
+  httpx:
+    level: WARNING
+    handlers:
+      - default
+    propagate: no
+  httpcore.http11:
+    level: WARNING
+    handlers:
+      - default
+    propagate: no
+  stripe:
+    level: WARNING
+    handlers:
+      - default
+    propagate: no
+  urllib3.connectionpool:
+    level: WARNING
+    handlers:
+      - default
+    propagate: no
+  neo4j:
+    level: WARNING
+    handlers:
+      - default
+    propagate: no
+root:
+  level: DEBUG
+  handlers:
+    - default
+  propagate: no
