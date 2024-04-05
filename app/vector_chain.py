@@ -1,13 +1,35 @@
 from langchain.prompts.prompt import PromptTemplate
 from langchain.vectorstores.neo4j_vector import Neo4jVector
 from langchain.chains import RetrievalQAWithSourcesChain
-from langchain.chains.conversation.memory import ConversationBufferMemory
 from langchain.schema.runnable import Runnable
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-
-# from app.llms import EMBEDDINGS, LLM
 import logging
 import os
+
+VECTOR_PROMPT_TEMPLATE = """Human: You are a data analyst who can answer questions only based on the context below.
+* Answer the question STRICTLY based on the context provided in JSON below.
+* Do not assume or retrieve any information outside of the context 
+* Use three sentences maximum and keep the answer concise
+* Think step by step before answering.
+* Do not return helpful or extra text or apologies
+* Just return summary to the user. DO NOT start with Here is a summary
+* List the results in rich text format if there are more than one results
+* If the context is empty, just respond None
+
+<question>
+{input}
+</question>
+
+Here is the context:
+<context>
+{context}
+</context>
+
+Assistant:"""
+
+VECTOR_PROMPT = PromptTemplate(
+    input_variables=["input","context"], template=VECTOR_PROMPT_TEMPLATE
+)
 
 def vector_chain() -> Runnable:
 
@@ -19,32 +41,6 @@ def vector_chain() -> Runnable:
 
     LLM = ChatOpenAI(temperature=0, openai_api_key=OPENAI_API_KEY)
     EMBEDDINGS = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
-
-    VECTOR_PROMPT_TEMPLATE = """Human: You are a data analyst who can answer questions only based on the context below.
-    * Answer the question STRICTLY based on the context provided in JSON below.
-    * Do not assume or retrieve any information outside of the context 
-    * Use three sentences maximum and keep the answer concise
-    * Think step by step before answering.
-    * Do not return helpful or extra text or apologies
-    * Just return summary to the user. DO NOT start with Here is a summary
-    * List the results in rich text format if there are more than one results
-    * If the context is empty, just respond None
-
-    <question>
-    {input}
-    </question>
-
-    Here is the context:
-    <context>
-    {context}
-    </context>
-
-    Assistant:"""
-    VECTOR_PROMPT = PromptTemplate(
-        input_variables=["input","context"], template=VECTOR_PROMPT_TEMPLATE
-    )
-
-    MEMORY = ConversationBufferMemory(memory_key="chat_history", input_key='question', output_key='answer', return_messages=True)
 
     index_name = "vector"
     node_property_name = "embeddings"
@@ -93,65 +89,7 @@ def vector_chain() -> Runnable:
         LLM,
         chain_type="stuff", 
         retriever=vector_retriever,
-        memory=MEMORY,
         reduce_k_below_max_tokens = True,
         max_tokens_limit=2000
     )
     return vector_chain
-
-# def get_results(question)-> str:
-#     """Generate response using Neo4jVector using vector index only
-
-#     Args:
-#         question (str): User query
-
-#     Returns:
-#         str: Formatted string answer with citations, if available.
-#     """
-
-#     NEO4J_URI = os.getenv("NEO4J_URI")
-#     NEO4J_DATABASE = os.getenv("NEO4J_DATABASE")
-#     NEO4J_USERNAME = os.getenv("NEO4J_USERNAME")
-#     NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD")
-
-#     print(f'Using Neo4j url: {NEO4J_URI}')
-
-#     # Returns a dict with keys: answer, sources
-#     chain_result = vector_chain.invoke({
-#         "question": question},
-#         prompt=VECTOR_PROMPT,
-#         return_only_outputs = True,
-#     )
-
-#     logging.debug(f'chain_result: {chain_result}')
-    
-#     result = chain_result['answer']
-
-#     # Cite sources, if any
-#     # sources = chain_result['sources']
-#     # sources_split = sources.split(', ')
-#     # for source in sources_split:
-#     #     if source != "" and source != "N/A" and source != "None":
-#     #         result += f"\n - [{source}]({source})"
-
-#     return result
-
-# # Using the vector store's similarity search directly.
-# def get_direct_results(question)-> str:
-#     """Generate response using Neo4jVector using vector index only
-
-#     Args:
-#         question (str): User query
-
-#     Returns:
-#         str: Formatted string answer with citations, if available.
-#     """
-
-#     # Returns a dict with keys: answer, sources
-#     vector_result = vector_store.similarity_search(question, k=3)
-
-#     logging.debug(f'chain_result: {vector_result}')
-    
-#     result = vector_result
-
-#     return result

@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Union
-from app.graph_chain import graph_chain
-from app.vector_chain import vector_chain
+from app.graph_chain import graph_chain, CYPHER_GENERATION_PROMPT
+from app.vector_chain import vector_chain, VECTOR_PROMPT
 from app.simple_agent import simple_agent_chain
 from fastapi import FastAPI 
 from typing import Union, Optional
@@ -32,13 +32,25 @@ def send_chat_message(body: ApiChatPostRequest) -> Union[None, ApiChatPostRespon
 
     question = body.message
 
+    v_response = vector_chain().invoke(
+        {"question":question},
+        prompt = VECTOR_PROMPT,
+        return_only_outputs = True
+    )
+    g_response = graph_chain().invoke(
+        {"query":question},
+        prompt = CYPHER_GENERATION_PROMPT,
+        return_only_outputs = True
+    )
+    
     if body.mode == 'vector':
-        response = vector_chain().invoke(question)
+        # Return only the Vector answer
+        response = v_response
     elif body.mode == 'graph':
-        response = graph_chain().invoke(question)
+        # Return only the Graph (text2Cypher) answer
+        response = g_response
     else:
-        v_response = vector_chain().invoke(question)
-        g_response = graph_chain().invoke(question)
+        # Return an answer from a chain that composites both the Vector and Graph responses
         response = simple_agent_chain().invoke({
             "question":question,
             "vector_result":v_response,
