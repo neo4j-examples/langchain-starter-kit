@@ -710,6 +710,30 @@ langchain-core = ">=0.1.28,<0.2.0"
 extended-testing = ["lxml (>=5.1.0,<6.0.0)"]
 
 [[package]]
+name = "langserve"
+version = "0.0.51"
+description = ""
+optional = false
+python-versions = ">=3.8.1,<4.0.0"
+files = [
+    {file = "langserve-0.0.51-py3-none-any.whl", hash = "sha256:e735eef2b6fde7e1514f4be8234b9f0727283e639822ca9c25e8ccc2d24e8492"},
+    {file = "langserve-0.0.51.tar.gz", hash = "sha256:036c0104c512bcc2c2406ae089ef9e7e718c32c39ebf6dcb2212f168c7d09816"},
+]
+
+[package.dependencies]
+fastapi = {version = ">=0.90.1,<1", optional = true, markers = "extra == \"server\" or extra == \"all\""}
+httpx = ">=0.23.0"
+langchain = ">=0.0.333"
+orjson = ">=2"
+pydantic = ">=1"
+sse-starlette = {version = ">=1.3.0,<2.0.0", optional = true, markers = "extra == \"server\" or extra == \"all\""}
+
+[package.extras]
+all = ["fastapi (>=0.90.1,<1)", "httpx-sse (>=0.3.1)", "sse-starlette (>=1.3.0,<2.0.0)"]
+client = ["httpx-sse (>=0.3.1)"]
+server = ["fastapi (>=0.90.1,<1)", "sse-starlette (>=1.3.0,<2.0.0)"]
+
+[[package]]
 name = "langsmith"
 version = "0.1.40"
 description = "Client library to connect to the LangSmith LLM Tracing and Evaluation Platform."
@@ -1414,6 +1438,23 @@ pymysql = ["pymysql"]
 sqlcipher = ["sqlcipher3_binary"]
 
 [[package]]
+name = "sse-starlette"
+version = "1.8.2"
+description = "SSE plugin for Starlette"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "sse_starlette-1.8.2-py3-none-any.whl", hash = "sha256:70cc7ef5aca4abe8a25dec1284cce4fe644dd7bf0c406d3e852e516092b7f849"},
+    {file = "sse_starlette-1.8.2.tar.gz", hash = "sha256:e0f9b8dec41adc092a0a6e0694334bd3cfd3084c44c497a6ebc1fb4bdd919acd"},
+]
+
+[package.dependencies]
+anyio = "*"
+fastapi = "*"
+starlette = "*"
+uvicorn = "*"
+
+[[package]]
 name = "starlette"
 version = "0.37.2"
 description = "The little ASGI library that shines."
@@ -1683,4 +1724,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "b81a0ebef2fc0c5138a50831907095c4bc3a62f04079be4fd012a3a1f14485d4"
+content-hash = "649d8c0e748779784de921234eaca1119c3f45e847d0440400cc26231b0f5bea"

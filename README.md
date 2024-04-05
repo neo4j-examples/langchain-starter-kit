@@ -13,12 +13,12 @@ This kit provides a simple [FastAPI](https://fastapi.tiangolo.com/) backend serv
 
 ## Usage
 ```
-NEO4J_URI=neo4j+ssc://9fcf58c6.databases.neo4j.io \
-NEO4J_DATABASE=neo4j \
-NEO4J_USERNAME=public \
-NEO4J_PASSWORD=read_only \
-OPENAI_API_KEY=<add_your_openai_key_here> \
-poetry run uvicorn app.server:app --reload --port=8000 --log-config=log_conf.yaml
+export NEO4J_URI=neo4j+ssc://9fcf58c6.databases.neo4j.io
+export NEO4J_DATABASE=neo4j
+export NEO4J_USERNAME=public
+export NEO4J_PASSWORD=read_only
+export OPENAI_API_KEY=<add_your_openai_key_here>
+langchain serve
 ```
 
 *NOTE* the above Neo4j credentials are for read-only access to a hosted sample dataset. Your own OpenAI api key will be needed to run this server. 
@@ -26,7 +26,7 @@ poetry run uvicorn app.server:app --reload --port=8000 --log-config=log_conf.yam
 *NOTE* the `NEO4J_URI` value can use either the neo4j or [bolt](https://neo4j.com/docs/bolt/current/bolt/) uri scheme. For more details on which to use, see this [example](https://neo4j.com/docs/driver-manual/4.0/client-applications/#driver-configuration-examples)
 
 
-A FastAPI server should now be running on your local port 8000/api/chat.
+Langserve should now be running on your local port 8000.
 
 ## Custom Database Setup
 If you would like to load your own instance with a subset of this information. Add your own OpenAI key to the Cypher code in the [edgar_import.cypher](edgar_import.cypher) file and run it in your instance's [Neo4j browser](https://neo4j.com/docs/browser-manual/current/).
