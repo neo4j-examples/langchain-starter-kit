@@ -55,3 +55,22 @@ Want to improve this kit? See the [contributing guide](./CONTRIBUTING.md)
 
 ## Learn More
 At [Neo4j GraphAcademy](https://graphacademy.neo4j.com), we offer a wide range of courses completely free of charge, including [Neo4j & LLM Fundamentals](https://graphacademy.neo4j.com/courses/llm-fundamentals/) and [Build a Neo4j-backed Chatbot using Python](https://graphacademy.neo4j.com/courses/llm-chatbot-python/).
+FastAPI will make endpoint information and the ability to test from a browser at http://localhost:8000/docs
+
+## Testing
+Alternatively, after the server is running, a curl command can be triggered to test the endpoint:
+```
+curl --location 'http://127.0.0.1:8000/api/chat' \
+--header 'Content-Type: application/json' \
+--data '{
+    "message":"How many forms are there?"}'
+```
+
+## Feedback
+Please provide feedback and report bugs as [GitHub issues](https://github.com/neo4j-examples/langchain-starter-kit/issues)
+
+## Contributing
+Want to improve this kit? See the [contributing guide](./CONTRIBUTING.md)
+
+## Learn More
+At [Neo4j GraphAcademy](https://graphacademy.neo4j.com), we offer a wide range of courses completely free of charge, including [Neo4j & LLM Fundamentals](https://graphacademy.neo4j.com/courses/llm-fundamentals/) and [Build a Neo4j-backed Chatbot using Python](https://graphacademy.neo4j.com/courses/llm-chatbot-python/).
