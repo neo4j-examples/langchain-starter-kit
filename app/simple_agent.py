@@ -2,12 +2,17 @@ from langchain.chains import LLMChain
 from langchain.chains.conversation.memory import ConversationBufferMemory
 from langchain.prompts import PromptTemplate
 from langchain.schema.runnable import Runnable
-from langchain_openai import ChatOpenAI
-import os
+from app.config import LLM
+
 
 def simple_agent_chain() -> Runnable:
 
-    MEMORY = ConversationBufferMemory(memory_key="agent_history", input_key='question', output_key='text', return_messages=True)
+    MEMORY = ConversationBufferMemory(
+        memory_key="agent_history",
+        input_key="question",
+        output_key="text",
+        return_messages=True,
+    )
 
     final_prompt = """You are a helpful question-answering agent. Your task is to analyze 
     and synthesize information from two sources: the top result from a similarity search 
@@ -21,12 +26,6 @@ def simple_agent_chain() -> Runnable:
 
     prompt = PromptTemplate.from_template(final_prompt)
 
-    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-    LLM = ChatOpenAI(temperature=0, openai_api_key=OPENAI_API_KEY)
+    simple_agent_chain = LLMChain(prompt=prompt, llm=LLM, memory=MEMORY)
 
-    simple_agent_chain = LLMChain(
-        prompt=prompt, 
-        llm=LLM,
-        memory = MEMORY)
-    
     return simple_agent_chain
