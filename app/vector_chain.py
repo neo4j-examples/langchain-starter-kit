@@ -1,5 +1,5 @@
 from langchain.prompts.prompt import PromptTemplate
-from langchain.vectorstores.neo4j_vector import Neo4jVector
+from langchain_community.vectorstores import Neo4jVector
 from langchain.chains import RetrievalQAWithSourcesChain
 from langchain.schema.runnable import Runnable
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
@@ -28,8 +28,9 @@ Here is the context:
 Assistant:"""
 
 VECTOR_PROMPT = PromptTemplate(
-    input_variables=["input","context"], template=VECTOR_PROMPT_TEMPLATE
+    input_variables=["input", "context"], template=VECTOR_PROMPT_TEMPLATE
 )
+
 
 def vector_chain() -> Runnable:
 
@@ -50,7 +51,7 @@ def vector_chain() -> Runnable:
     # Neo4jVector API: https://api.python.langchain.com/en/latest/vectorstores/langchain_community.vectorstores.neo4j_vector.Neo4jVector.html#langchain_community.vectorstores.neo4j_vector.Neo4jVector
 
     try:
-        logging.debug(f'Attempting to retrieve existing vector index: {index_name}...')
+        logging.debug(f"Attempting to retrieve existing vector index: {index_name}...")
         vector_store = Neo4jVector.from_existing_index(
             embedding=EMBEDDINGS,
             url=NEO4J_URI,
@@ -60,36 +61,37 @@ def vector_chain() -> Runnable:
             index_name=index_name,
             embedding_node_property=node_property_name,
         )
-        logging.debug(f'Using existing index: {index_name}')
+        logging.debug(f"Using existing index: {index_name}")
     except:
-        logging.debug(f'No existing index found. Attempting to create a new vector index named {index_name}...')
-        try:
-            vector_store = Neo4jVector.from_existing_graph(
-                embedding=EMBEDDINGS,
-                url=NEO4J_URI,
-                username=NEO4J_USERNAME,
-                password=NEO4J_PASSWORD,
-                database=NEO4J_DATABASE,
-                index_name=index_name,
-                node_label="Chunk",
-                text_node_properties=["text"],
-                embedding_node_property=node_property_name,
-            )
-            logging.debug(f'Created new index: {index_name}')
-        except Exception as e:
-            logging.error(f'Failed to retrieve existing or to create a Neo4jVector: {e}')
+        logging.debug(
+            f"No existing index found. Attempting to create a new vector index named {index_name}..."
+        )
 
-    if vector_store is None:
-        logging.error(f'Failed to retrieve or create a Neo4jVector. Exiting.')
-        exit()
+        # Will raise an exception if credentials invalid, unable to connect, or Neo4j version doesn't support vector indexing
+        vector_store = Neo4jVector.from_existing_graph(
+            embedding=EMBEDDINGS,
+            url=NEO4J_URI,
+            username=NEO4J_USERNAME,
+            password=NEO4J_PASSWORD,
+            database=NEO4J_DATABASE,
+            index_name=index_name,
+            node_label="Chunk",
+            text_node_properties=["text"],
+            embedding_node_property=node_property_name,
+        )
+        logging.debug(f"Created new index: {index_name}")
+
+    # if vector_store is None:
+    #     logging.error(f"Failed to retrieve or create a Neo4jVector. Exiting.")
+    #     exit()
 
     vector_retriever = vector_store.as_retriever()
 
     vector_chain = RetrievalQAWithSourcesChain.from_chain_type(
         LLM,
-        chain_type="stuff", 
+        chain_type="stuff",
         retriever=vector_retriever,
-        reduce_k_below_max_tokens = True,
-        max_tokens_limit=2000
+        reduce_k_below_max_tokens=True,
+        max_tokens_limit=2000,
     )
     return vector_chain
