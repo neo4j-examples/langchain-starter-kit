@@ -3,7 +3,7 @@ from typing import Union
 from app.graph_chain import graph_chain, CYPHER_GENERATION_PROMPT
 from app.vector_chain import vector_chain, VECTOR_PROMPT
 from app.simple_agent import simple_agent_chain
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from typing import Union, Optional
 from pydantic import BaseModel, Field
 
@@ -17,7 +17,7 @@ class ApiChatPostRequest(BaseModel):
 
 
 class ApiChatPostResponse(BaseModel):
-    message: Optional[str] = Field(None, description="The chat message response")
+    response: str
 
 
 app = FastAPI()
@@ -29,7 +29,7 @@ app = FastAPI()
     responses={"201": {"model": ApiChatPostResponse}},
     tags=["chat"],
 )
-def send_chat_message(body: ApiChatPostRequest) -> Union[None, ApiChatPostResponse]:
+def send_chat_message(body: ApiChatPostRequest):
     """
     Send a chat message
     """
@@ -43,7 +43,7 @@ def send_chat_message(body: ApiChatPostRequest) -> Union[None, ApiChatPostRespon
         )
     except Exception as e:
         msg = f"Problem running Neo4j vector chain. Check credentials and that the target Neo4j instance supports vector indexes (v5.11+) Exception: {e}"
-        return msg, 500
+        raise HTTPException(status_code=500, detail=msg)
 
     try:
         g_response = graph_chain().invoke(
@@ -53,7 +53,7 @@ def send_chat_message(body: ApiChatPostRequest) -> Union[None, ApiChatPostRespon
         )
     except Exception as e:
         msg = f"Problem running Neo4j graph chain. Check credentials and that the target Neo4j instance is running. Exception: {e}"
-        return msg, 500
+        raise HTTPException(status_code=500, detail=msg)
 
     if body.mode == "vector":
         # Return only the Vector answer
@@ -72,4 +72,4 @@ def send_chat_message(body: ApiChatPostRequest) -> Union[None, ApiChatPostRespon
             }
         )["text"]
 
-    return f"{response}", 200
+    return ApiChatPostResponse(response == response)

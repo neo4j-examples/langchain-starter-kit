@@ -50,36 +50,38 @@ def vector_chain() -> Runnable:
 
     # Neo4jVector API: https://api.python.langchain.com/en/latest/vectorstores/langchain_community.vectorstores.neo4j_vector.Neo4jVector.html#langchain_community.vectorstores.neo4j_vector.Neo4jVector
 
-    try:
-        logging.debug(f"Attempting to retrieve existing vector index: {index_name}...")
-        vector_store = Neo4jVector.from_existing_index(
-            embedding=EMBEDDINGS,
-            url=NEO4J_URI,
-            username=NEO4J_USERNAME,
-            password=NEO4J_PASSWORD,
-            database=NEO4J_DATABASE,
-            index_name=index_name,
-            embedding_node_property=node_property_name,
-        )
-        logging.debug(f"Using existing index: {index_name}")
-    except:
-        logging.debug(
-            f"No existing index found. Attempting to create a new vector index named {index_name}..."
-        )
+    # try:
+    logging.debug(
+        f"Attempting to retrieve existing vector index'{index_name}' from Neo4j instance at {NEO4J_URI}..."
+    )
+    vector_store = Neo4jVector.from_existing_index(
+        embedding=EMBEDDINGS,
+        url=NEO4J_URI,
+        username=NEO4J_USERNAME,
+        password=NEO4J_PASSWORD,
+        database=NEO4J_DATABASE,
+        index_name=index_name,
+        embedding_node_property=node_property_name,
+    )
+    logging.debug(f"Using existing index: {index_name}")
+    # except:
+    #     logging.debug(
+    #         f"No existing index found. Attempting to create a new vector index named {index_name}..."
+    #     )
 
-        # Will raise an exception if credentials invalid, unable to connect, or Neo4j version doesn't support vector indexing
-        vector_store = Neo4jVector.from_existing_graph(
-            embedding=EMBEDDINGS,
-            url=NEO4J_URI,
-            username=NEO4J_USERNAME,
-            password=NEO4J_PASSWORD,
-            database=NEO4J_DATABASE,
-            index_name=index_name,
-            node_label="Chunk",
-            text_node_properties=["text"],
-            embedding_node_property=node_property_name,
-        )
-        logging.debug(f"Created new index: {index_name}")
+    #     # Will raise an exception if credentials invalid, unable to connect, or Neo4j version doesn't support vector indexing
+    #     vector_store = Neo4jVector.from_existing_graph(
+    #         embedding=EMBEDDINGS,
+    #         url=NEO4J_URI,
+    #         username=NEO4J_USERNAME,
+    #         password=NEO4J_PASSWORD,
+    #         database=NEO4J_DATABASE,
+    #         index_name=index_name,
+    #         node_label="Chunk",
+    #         text_node_properties=["text"],
+    #         embedding_node_property=node_property_name,
+    #     )
+    #     logging.debug(f"Created new index: {index_name}")
 
     # if vector_store is None:
     #     logging.error(f"Failed to retrieve or create a Neo4jVector. Exiting.")
