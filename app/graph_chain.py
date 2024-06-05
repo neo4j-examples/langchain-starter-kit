@@ -60,6 +60,8 @@ def graph_chain() -> Runnable:
         sanitize=True,
     )
 
+    graph.refresh_schema()
+
     # Official API doc for GraphCypherQAChain at: https://api.python.langchain.com/en/latest/chains/langchain.chains.graph_qa.base.GraphQAChain.html#
     graph_chain = GraphCypherQAChain.from_llm(
         cypher_llm=LLM,
