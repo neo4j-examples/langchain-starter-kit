@@ -41,6 +41,7 @@ CYPHER_GENERATION_PROMPT = PromptTemplate(
     input_variables=["schema", "question"], template=CYPHER_GENERATION_TEMPLATE
 )
 
+
 def graph_chain() -> Runnable:
 
     NEO4J_URI = os.getenv("NEO4J_URI")
@@ -56,20 +57,20 @@ def graph_chain() -> Runnable:
         username=NEO4J_USERNAME,
         password=NEO4J_PASSWORD,
         database=NEO4J_DATABASE,
-        sanitize = True
+        sanitize=True,
     )
 
     graph.refresh_schema()
 
     # Official API doc for GraphCypherQAChain at: https://api.python.langchain.com/en/latest/chains/langchain.chains.graph_qa.base.GraphQAChain.html#
     graph_chain = GraphCypherQAChain.from_llm(
-        cypher_llm = LLM,
-        qa_llm = LLM,
-        validate_cypher= True,
+        cypher_llm=LLM,
+        qa_llm=LLM,
+        validate_cypher=True,
         graph=graph,
-        verbose=True, 
-        return_intermediate_steps = True,
-        return_direct = True,
+        verbose=True,
+        return_intermediate_steps=True,
+        # return_direct = True,
     )
 
     return graph_chain
