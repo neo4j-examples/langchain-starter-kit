@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 from pydantic import BaseModel, Field
 from neo4j import exceptions
+import logging
 
 
 class ApiChatPostRequest(BaseModel):
@@ -28,18 +29,22 @@ class Neo4jExceptionMiddleware(BaseHTTPMiddleware):
             return response
         except exceptions.AuthError as e:
             msg = f"Neo4j Authentication Error: {e}"
-            return Response(content=msg, status_code=400)
+            logging.warning(msg)
+            return Response(content=msg, status_code=400, media_type="text/plain")
         except exceptions.ServiceUnavailable as e:
             msg = f"Neo4j Database Unavailable Error: {e}"
-            return Response(content=msg, status_code=400)
+            logging.warning(msg)
+            return Response(content=msg, status_code=400, media_type="text/plain")
         except Exception as e:
-            return Response(content=str(e), status_code=400)
+            msg = f"Neo4j Uncaught Exception: {e}"
+            logging.error(msg)
+            return Response(content=msg, status_code=400, media_type="text/plain")
 
 
 # Allowed CORS origins
 origins = [
-    "http://127.0.0.1",  # Alternative localhost address
-    "http://localhost",
+    "http://127.0.0.1:8000",  # Alternative localhost address
+    "http://localhost:8000",
 ]
 
 app = FastAPI()
@@ -62,7 +67,7 @@ app.add_middleware(Neo4jExceptionMiddleware)
     responses={"201": {"model": ApiChatPostResponse}},
     tags=["chat"],
 )
-def send_chat_message(body: ApiChatPostRequest):
+async def send_chat_message(body: ApiChatPostRequest):
     """
     Send a chat message
     """
