@@ -21,6 +21,20 @@ For the vector portion of this kit to work, it presumes the following about the 
 
 ## Usage
 
+Add a .env file to the root folder with the following keys and your own credentials (or these included public access only creds):
+
+```
+NEO4J_URI=neo4j+ssc://9fcf58c6.databases.neo4j.io
+NEO4J_DATABASE=neo4j
+NEO4J_USERNAME=public
+NEO4J_PASSWORD=read_only
+OPENAI_API_KEY=<your_openai_key_here>
+```
+
+Then run: `poetry run uvicorn app.server:app --reload --port=8000`
+
+Or add env variables at runtime:
+
 ```
 NEO4J_URI=neo4j+ssc://9fcf58c6.databases.neo4j.io \
 NEO4J_DATABASE=neo4j \

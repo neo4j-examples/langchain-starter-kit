@@ -47,7 +47,7 @@ def send_chat_message(body: ApiChatPostRequest) -> Union[None, ApiChatPostRespon
             "vector_result": v_response,
             "graph_result": g_response,
         }
-    )["text"]
+    )
 
     return f"{response}", 200
 

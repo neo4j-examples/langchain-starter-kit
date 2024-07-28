@@ -11,12 +11,12 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.11"
-fastapi = "^0.110.1"
-uvicorn = "^0.29.0"
-langchain-openai = "^0.1.1"
-langchain = "^0.1.14"
-langchain-community = "^0.0.31"
-neo4j = "^5.19.0"
+langchain = "^0.2.1"
+langchain-community = "^0.2.1"
+langchain-openai = "^0.1.8"
+fastapi = "^0.111.0"
+uvicorn = "^0.30.1"
+neo4j = "^5.20.0"
 
 
 [build-system]

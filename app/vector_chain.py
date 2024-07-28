@@ -12,8 +12,6 @@ from app.config import (
 )
 import logging
 
-# import os
-
 VECTOR_PROMPT_TEMPLATE = """Human: You are a data analyst who can answer questions only based on the context below.
 * Answer the question STRICTLY based on the context provided in JSON below.
 * Do not assume or retrieve any information outside of the context 
