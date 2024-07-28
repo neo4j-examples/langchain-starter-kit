@@ -1,5 +1,5 @@
 from langchain.prompts.prompt import PromptTemplate
-from langchain.vectorstores.neo4j_vector import Neo4jVector
+from langchain_community.vectorstores import Neo4jVector
 from langchain.chains import RetrievalQAWithSourcesChain
 from langchain.schema.runnable import Runnable
 from app.config import (
@@ -42,8 +42,18 @@ VECTOR_PROMPT = PromptTemplate(
 
 def vector_chain() -> Runnable:
 
+    # Arbitraty name of index
     index_name = "vector"
+
+    # Nodes to contain vector data
+    node_label = "Movie"
+
+    # Property containing unstructured text of interest.
+    node_property_source = "plot"
+
+    # Node property to contain / that contains vector embeddings
     node_property_name = "embeddings"
+
     vector_store = None
 
     # Neo4jVector API: https://api.python.langchain.com/en/latest/vectorstores/langchain_community.vectorstores.neo4j_vector.Neo4jVector.html#langchain_community.vectorstores.neo4j_vector.Neo4jVector
@@ -58,6 +68,7 @@ def vector_chain() -> Runnable:
             database=NEO4J_DATABASE,
             index_name=index_name,
             embedding_node_property=node_property_name,
+            text_node_property=node_property_source,
         )
         logging.debug(f"Using existing index: {index_name}")
     except:
@@ -72,9 +83,9 @@ def vector_chain() -> Runnable:
                 password=NEO4J_PASSWORD,
                 database=NEO4J_DATABASE,
                 index_name=index_name,
-                node_label="Chunk",
-                text_node_properties=["text"],
+                node_label=node_label,
                 embedding_node_property=node_property_name,
+                text_node_properties=[node_property_source],
             )
             logging.debug(f"Created new index: {index_name}")
         except Exception as e:
