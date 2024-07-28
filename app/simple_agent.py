@@ -2,7 +2,6 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain.prompts import PromptTemplate
 from langchain.schema.runnable import Runnable
 from langchain_openai import ChatOpenAI
-from langchain.chains import ConversationChain
 from langchain_core.prompts import PromptTemplate
 import os
 

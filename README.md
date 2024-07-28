@@ -11,6 +11,14 @@ This kit provides a simple [FastAPI](https://fastapi.tiangolo.com/) backend serv
 - An [OpenAI API Key](https://openai.com/blog/openai-api)
 - A running [local](https://neo4j.com/download/) or [cloud](https://neo4j.com/cloud/platform/aura-graph-database/) Neo4j database
 
+## Presumptions
+
+For the vector portion of this kit to work, it presumes the following about the source data:
+
+- There are Nodes labeled 'Chunk' already within the database. This target label type can be changed within app/vector_chain.py file - line 49
+- Node records contain a 'text' property with the unstructured data of interest. This can be changed within the app/vector_chain.py file - line 52
+- Node records contain a 'sources' property. This is used by LangChain's [RetrievalQAWithSourcesChain](https://api.python.langchain.com/en/latest/chains/langchain.chains.qa_with_sources.retrieval.RetrievalQAWithSourcesChain.html)
+
 ## Usage
 
 Add a .env file to the root folder with the following keys and your own credentials (or these included public access only creds):
@@ -23,7 +31,7 @@ NEO4J_PASSWORD=read_only
 OPENAI_API_KEY=<your_openai_key_here>
 ```
 
-Then run: `poetry run uvicorn app.server:app --reload --port=8000 `
+Then run: `poetry run uvicorn app.server:app --reload --port=8000`
 
 Or add env variables at runtime:
 

@@ -2,7 +2,7 @@ from langchain.chains import GraphCypherQAChain
 from langchain_community.graphs import Neo4jGraph
 from langchain.prompts.prompt import PromptTemplate
 from langchain.schema.runnable import Runnable
-from langchain_openai import ChatOpenAI
+from app.config import LLM, NEO4J_DATABASE, NEO4J_PASSWORD, NEO4J_URI, NEO4J_USERNAME
 import os
 
 CYPHER_GENERATION_TEMPLATE = """Task:Generate Cypher statement to query a graph database.
@@ -44,14 +44,6 @@ CYPHER_GENERATION_PROMPT = PromptTemplate(
 
 def graph_chain() -> Runnable:
 
-    NEO4J_URI = os.getenv("NEO4J_URI")
-    NEO4J_DATABASE = os.getenv("NEO4J_DATABASE")
-    NEO4J_USERNAME = os.getenv("NEO4J_USERNAME")
-    NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD")
-    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-
-    LLM = ChatOpenAI(temperature=0, openai_api_key=OPENAI_API_KEY)
-
     graph = Neo4jGraph(
         url=NEO4J_URI,
         username=NEO4J_USERNAME,
@@ -59,8 +51,6 @@ def graph_chain() -> Runnable:
         database=NEO4J_DATABASE,
         sanitize=True,
     )
-
-    graph.refresh_schema()
 
     # Official API doc for GraphCypherQAChain at: https://api.python.langchain.com/en/latest/chains/langchain.chains.graph_qa.base.GraphQAChain.html#
     graph_chain = GraphCypherQAChain.from_llm(
@@ -70,7 +60,7 @@ def graph_chain() -> Runnable:
         graph=graph,
         verbose=True,
         return_intermediate_steps=True,
-        # return_direct = True,
+        return_direct=True,
     )
 
     return graph_chain
