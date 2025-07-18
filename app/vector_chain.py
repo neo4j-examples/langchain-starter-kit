@@ -1,7 +1,9 @@
-from langchain.prompts.prompt import PromptTemplate
-from langchain_community.vectorstores import Neo4jVector
-from langchain.chains import RetrievalQAWithSourcesChain
-from langchain.schema.runnable import Runnable
+"""Module for creating and managing vector search functionality with Neo4j."""
+import logging
+
+from langchain.prompts import PromptTemplate
+from langchain_community.vectorstores.neo4j_vector import Neo4jVector
+from langchain.chains import RetrievalQA
 from app.config import (
     LLM,
     EMBEDDINGS,
@@ -10,54 +12,58 @@ from app.config import (
     NEO4J_USERNAME,
     NEO4J_PASSWORD,
 )
-import logging
 
-VECTOR_PROMPT_TEMPLATE = """Human: You are a data analyst who can answer questions only based on the context below.
-* Answer the question STRICTLY based on the context provided in JSON below.
-* Do not assume or retrieve any information outside of the context 
-* Use three sentences maximum and keep the answer concise
-* Think step by step before answering.
-* Do not return helpful or extra text or apologies
-* Just return summary to the user. DO NOT start with Here is a summary
-* List the results in rich text format if there are more than one results
-* If the context is empty, just respond None
+# Module-level constants
+DEFAULT_INDEX_NAME = "form_10k_chunks"
+DEFAULT_NODE_LABEL = "Chunk"
+DEFAULT_NODE_PROPERTY_SOURCE = "text"
+DEFAULT_EMBEDDING_PROPERTY = "textopenaiembedding"
+DEFAULT_MAX_TOKENS = 2000
 
-<question>
-{input}
-</question>
+# Simple prompt for the QA chain
+# QA_PROMPT = """Use the following pieces of context to answer the question at the end. 
+# If you don't know the answer, just say that you don't know, don't try to make up an answer.
 
-Here is the context:
-<context>
-{context}
-</context>
+# Context:
+# {context}
 
-Assistant:"""
+# Question: {question}
+# Helpful Answer:"""
 
-VECTOR_PROMPT = PromptTemplate(
-    input_variables=["input", "context"], template=VECTOR_PROMPT_TEMPLATE
-)
+# QA_PROMPT_TEMPLATE = PromptTemplate(
+#     template=QA_PROMPT, 
+#     input_variables=["context", "question"]
+# )
 
 
-def vector_chain() -> Runnable:
+def vector_chain(
+    index_name: str = DEFAULT_INDEX_NAME,
+    node_label: str = DEFAULT_NODE_LABEL,
+    node_property_source: str = DEFAULT_NODE_PROPERTY_SOURCE,
+    node_property_name: str = DEFAULT_EMBEDDING_PROPERTY,
+) -> RetrievalQA:
+    """Creates a question-answering chain using Neo4j's vector search capabilities.
+    
+    This function initializes a retrieval-augmented QA system that:
+    - Searches for relevant context using vector similarity in Neo4j
+    - Uses the retrieved context to generate answers with an LLM
+    - Handles input/output formatting for seamless integration with the server
 
-    # Arbitraty name of index
-    index_name = "vector"
+    Args:
+        index_name: Name of the vector index in Neo4j (default: "vector")
+        node_label: Label of nodes containing the text and vector data (default: "Movie")
+        node_property_source: Node property containing the source text to search (default: "plot")
+        node_property_name: Property name where vector embeddings are stored (default: "embedding")
 
-    # Nodes to contain vector data
-    node_label = "Movie"
+    Returns:
+        A LangChain Runnable that takes a question and returns an answer string.
+        The runnable expects input in the format: {"question": "your question here"}
 
-    # Property containing unstructured text of interest.
-    node_property_source = "plot"
-
-    # Node property to contain / that contains vector embeddings
-    node_property_name = "embeddings"
-
-    vector_store = None
-
-    # Neo4jVector API: https://api.python.langchain.com/en/latest/vectorstores/langchain_community.vectorstores.neo4j_vector.Neo4jVector.html#langchain_community.vectorstores.neo4j_vector.Neo4jVector
-
+    Raises:
+        RuntimeError: If the vector store cannot be initialized or connected to
+    """
     try:
-        logging.debug(f"Attempting to retrieve existing vector index: {index_name}...")
+        # Try to connect to existing vector store
         vector_store = Neo4jVector.from_existing_index(
             embedding=EMBEDDINGS,
             url=NEO4J_URI,
@@ -68,11 +74,9 @@ def vector_chain() -> Runnable:
             embedding_node_property=node_property_name,
             text_node_property=node_property_source,
         )
-        logging.debug(f"Using existing index: {index_name}")
-    except:
-        logging.debug(
-            f"No existing index found. Attempting to create a new vector index named {index_name} (this could take a while)..."
-        )
+        logging.info(f"Connected to existing Neo4j vector index: {index_name}")
+    except Exception as e:
+        logging.warning(f"Could not connect to existing index: {str(e)}. Attempting to create new index...")
         try:
             vector_store = Neo4jVector.from_existing_graph(
                 embedding=EMBEDDINGS,
@@ -85,23 +89,25 @@ def vector_chain() -> Runnable:
                 embedding_node_property=node_property_name,
                 text_node_properties=[node_property_source],
             )
-            logging.debug(f"Created new index: {index_name}")
+            logging.info(f"Created new Neo4j vector index: {index_name}")
         except Exception as e:
-            logging.error(
-                f"Failed to retrieve existing or to create a Neo4jVector: {e}"
-            )
+            error_msg = f"Failed to initialize Neo4jVector: {str(e)}"
+            logging.error(error_msg)
+            raise RuntimeError(error_msg) from e
 
-    if vector_store is None:
-        logging.error(f"Failed to retrieve or create a Neo4jVector. Exiting.")
-        exit()
+    # Create a retriever
+    retriever = vector_store.as_retriever()
 
-    vector_retriever = vector_store.as_retriever()
-
-    vector_chain = RetrievalQAWithSourcesChain.from_chain_type(
-        LLM,
+    # Create the base QA chain
+    qa_chain = RetrievalQA.from_chain_type(
+        llm=LLM,
         chain_type="stuff",
-        retriever=vector_retriever,
-        reduce_k_below_max_tokens=True,
-        max_tokens_limit=2000,
+        retriever=retriever,
+        return_source_documents=False,
+        # chain_type_kwargs={"prompt": QA_PROMPT_TEMPLATE}
     )
-    return vector_chain
+
+    # NOTE: Technically this will return answers contained in the filing chunks,
+    # which may or may not mention that actual source Company it's attached to.
+
+    return qa_chain

@@ -19,21 +19,23 @@ For the vector portion of this kit to work, it presumes the following about the 
 - Node records contain a 'text' property with the unstructured data of interest. This can be changed within the app/vector_chain.py file - line 52
 - Node records contain a 'sources' property. This is used by LangChain's [RetrievalQAWithSourcesChain](https://api.python.langchain.com/en/latest/chains/langchain.chains.qa_with_sources.retrieval.RetrievalQAWithSourcesChain.html)
 
+## Installation
+1. Download or clone this repo
+2. Install dependencies: `poetry install`
+3. Optionally copy the `env.sample` file to a new file named `.env` and add your own credentials:
+
+```
+cp env.sample .env
+```
+
+
 ## Usage
-
-Add a .env file to the root folder with the following keys and your own credentials (or these included public access only creds):
-
+From the root directory, run: 
 ```
-NEO4J_URI=neo4j+ssc://9fcf58c6.databases.neo4j.io
-NEO4J_DATABASE=neo4j
-NEO4J_USERNAME=public
-NEO4J_PASSWORD=read_only
-OPENAI_API_KEY=<your_openai_key_here>
+poetry run uvicorn app.server:app --reload --port=8000
 ```
 
-Then run: `poetry run uvicorn app.server:app --reload --port=8000`
-
-Or add env variables at runtime:
+If not using a .env file, add env variables at runtime:
 
 ```
 NEO4J_URI=neo4j+ssc://9fcf58c6.databases.neo4j.io \
@@ -49,6 +51,12 @@ _NOTE_ the above Neo4j credentials are for read-only access to a hosted sample d
 _NOTE_ the `NEO4J_URI` value can use either the neo4j or [bolt](https://neo4j.com/docs/bolt/current/bolt/) uri scheme. For more details on which to use, see this [example](https://neo4j.com/docs/driver-manual/4.0/client-applications/#driver-configuration-examples)
 
 A FastAPI server should now be running on your local port 8000/api/chat.
+
+## Sample Questions
+- How many forms are there?
+- What is the most common form type?
+- What is the most common issuer?
+
 
 ## Custom Database Setup
 
