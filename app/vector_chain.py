@@ -20,21 +20,6 @@ DEFAULT_NODE_PROPERTY_SOURCE = "text"
 DEFAULT_EMBEDDING_PROPERTY = "textopenaiembedding"
 DEFAULT_MAX_TOKENS = 2000
 
-# Simple prompt for the QA chain
-# QA_PROMPT = """Use the following pieces of context to answer the question at the end. 
-# If you don't know the answer, just say that you don't know, don't try to make up an answer.
-
-# Context:
-# {context}
-
-# Question: {question}
-# Helpful Answer:"""
-
-# QA_PROMPT_TEMPLATE = PromptTemplate(
-#     template=QA_PROMPT, 
-#     input_variables=["context", "question"]
-# )
-
 
 def vector_chain(
     index_name: str = DEFAULT_INDEX_NAME,
