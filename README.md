@@ -11,13 +11,6 @@ This kit provides a simple [FastAPI](https://fastapi.tiangolo.com/) backend serv
 - An [OpenAI API Key](https://openai.com/blog/openai-api)
 - A running [local](https://neo4j.com/download/) or [cloud](https://neo4j.com/cloud/platform/aura-graph-database/) Neo4j database
 
-## Presumptions
-
-For the vector portion of this kit to work, it presumes the following about the source data:
-
-- There are Nodes labeled 'Chunk' already within the database. This target label type can be changed within app/vector_chain.py file - line 49
-- Node records contain a 'text' property with the unstructured data of interest. This can be changed within the app/vector_chain.py file - line 52
-- Node records contain a 'sources' property. This is used by LangChain's [RetrievalQAWithSourcesChain](https://api.python.langchain.com/en/latest/chains/langchain.chains.qa_with_sources.retrieval.RetrievalQAWithSourcesChain.html)
 
 ## Installation
 1. Download or clone this repo
@@ -52,11 +45,6 @@ _NOTE_ the `NEO4J_URI` value can use either the neo4j or [bolt](https://neo4j.co
 
 A FastAPI server should now be running on your local port 8000/api/chat.
 
-## Sample Questions
-- How many forms are there?
-- What is the most common form type?
-- What is the most common issuer?
-
 
 ## Custom Database Setup
 
@@ -64,9 +52,11 @@ If you would like to load your own instance with a subset of this information. A
 
 For more information on how this load script works, see [this notebook](https://github.com/neo4j-examples/sec-edgar-notebooks/blob/main/notebooks/kg-construction/1-mvg.ipynb).
 
+
 ## Docs
 
 FastAPI will make endpoint information and the ability to test from a browser at http://localhost:8000/docs
+
 
 ## Testing
 
@@ -83,9 +73,11 @@ curl --location 'http://127.0.0.1:8000/api/chat' \
 
 Please provide feedback and report bugs as [GitHub issues](https://github.com/neo4j-examples/langchain-starter-kit/issues)
 
+
 ## Contributing
 
 Want to improve this kit? See the [contributing guide](./CONTRIBUTING.md)
+
 
 ## Learn More
 
